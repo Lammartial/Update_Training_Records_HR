@@ -1,29 +1,57 @@
 import win32com.client as win32
 import openpyxl
 import os
+import sys
 import shutil # <-- needed to copy the template file
 import pywintypes # <-- needed to convert dates for Excel COM
 from datetime import datetime, date, time, timedelta
 
+# Delete pywin32 generated cache before starting Excel COM
+gen_py_path = os.path.join(os.environ["TEMP"], "gen_py")
+
+if os.path.exists(gen_py_path):
+    shutil.rmtree(gen_py_path)
+    print("Deleted gen_py cache.")
+
 # Data file paths
 USER_HOME = os.path.expanduser("~")
 
-# file_0_path = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan_Test.xlsx"
-file_0_path = r"C:\Training HR scripts\Output\Training_Evidence_Scan_Test.xlsx"
-file_1_path = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Record_Template.xlsx"
-# file_2_path = USER_HOME + r"\RRC power solutions\RRC VN - Documents\280_HR\104_ Employee_Management_Table\02. Employee management\RRC_Employee_Master_Data_2025-07-10.xlsx"
+# Automatically detect which RRC SharePoint folder structure is synced
+if os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"
+    print("User synced the 999_SHARE_VN folder separately!")
+elif os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"
+    print("User synced the whole Sharepoint library Documents folder!")
+else:
+    raise FileNotFoundError("Cannot find the RRC 999_SHARE_VN folder.")
+
+# Automatically detect which RRC SharePoint folder structure is synced
+if os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - 280_HR"):
+    BASE_DIR_1 = USER_HOME + r"\RRC power solutions\RRC VN - 280_HR"
+    print("User synced the 280_HR folder separately!")
+elif os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - Documents\280_HR"):
+    BASE_DIR_1 = USER_HOME + r"\RRC power solutions\RRC VN - Documents\280_HR"
+    print("User synced the whole Sharepoint library Documents folder!")
+else:
+    raise FileNotFoundError("Cannot find the RRC 280_HR folder.")
+
+file_0_path = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan.xlsx"
+# file_0_path = r"C:\Training HR scripts\Output\Training_Evidence_Scan_Test.xlsx"
+file_1_path = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Record_Template.xlsx"
+#file_2_path = BASE_DIR_1 + r"\104_ Employee_Management_Table\02. Employee management\RRC_Employee_Master_Data_2025-07-10.xlsx"
 file_2_path = r"C:\Training HR scripts\RRC_Employee_Master_Data_2025-07-10.xlsx"
-file_3_path = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Matrix.xlsx"
+file_3_path = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Matrix.xlsx"
 
 # Log file path in same folder like file1 = template
 log_path = os.path.join(os.path.dirname(file_1_path), "Training_Record.log")
 
 # Output file with current date & time
-timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+timestamp = datetime.now().strftime("%Y-%m-%d")
 output_filename = f"Training_Record_{timestamp}.xlsx"
 # output_path = os.path.join(os.path.dirname(file_1_path), output_filename)
-output_dir = r"C:\Training HR scripts\Output"
-# output_dir = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training"
+# output_dir = r"C:\Training HR scripts\Output"
+output_dir = BASE_DIR + r"\280_HR\004_Training\100_Training"
 output_path = os.path.join(output_dir, output_filename)
 
 # Make a copy of the template to work on, so original is not modified
@@ -343,9 +371,6 @@ if ws3 is not None:
             # Only "1" is active; anything else (0/2/blank) is treated as inactive
             ACTIVE_FLAG_BY_TRAINING[tn] = "1" if af == "1" else "0"
 
-
-
-
 def get_required_training_numbers(group_val):
     """
     Find the row for the given Training_Group in column D (starting at row 7),
@@ -543,11 +568,11 @@ except Exception as _e:
     log(f"WARNING: could not create 'log' sheet: {_e}")
 
 
-
 # *** STEP 5: Save the new workbook with timestamp ***
 log("*** STEP 5: Saving and closing...")
 log(f"Saving final workbook to: {output_path}")
-wb.SaveAs(output_path)
+# wb.SaveAs(output_path)
+wb.Save()
 wb.Close(SaveChanges=True)
 excel.Quit()
 

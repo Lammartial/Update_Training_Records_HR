@@ -111,7 +111,7 @@ def launch_gui():
     style.configure("Start.TButton", font=("Segoe UI", 10, "bold"), padding=8)
 
     # Predefined folder for the file picker
-    predefined_dir = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import"
+    predefined_dir = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import"
     # predefined_dir = r"C:\Training HR scripts\Input"
     # --- Styles / layout ---
     root.geometry("960x640")
@@ -213,13 +213,34 @@ def launch_gui():
 # CONFIGURATION
 # =========================
 USER_HOME = os.path.expanduser("~")
-FILE1 = r"C:\Training HR scripts\Output\Training_Evidence_Scan_Test.xlsx"
-# FILE1 = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan_Test.xlsx"
+
+# Automatically detect which RRC SharePoint folder structure is synced
+if os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"
+    print("User synced the 999_SHARE_VN folder separately!")
+elif os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"
+    print("User synced the whole Sharepoint library Documents folder!")
+else:
+    raise FileNotFoundError("Cannot find the RRC 999_SHARE_VN folder.")
+
+# Automatically detect which RRC SharePoint folder structure is synced
+if os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - 280_HR"):
+    BASE_DIR_1 = USER_HOME + r"\RRC power solutions\RRC VN - 280_HR"
+    print("User synced the 280_HR folder separately!")
+elif os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - Documents\280_HR"):
+    BASE_DIR_1 = USER_HOME + r"\RRC power solutions\RRC VN - Documents\280_HR"
+    print("User synced the whole Sharepoint library Documents folder!")
+else:
+    raise FileNotFoundError("Cannot find the RRC 280_HR folder.")
+
+# FILE1 = r"C:\Training HR scripts\Output\Training_Evidence_Scan_Test.xlsx"
+FILE1 = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan.xlsx"
 # FILE4 = r"C:\Training HR scripts\Input\Training_Evidence.xlsx"
 
-FILE4 = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import\Training_Evidence.xlsx"
-FILE2 = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Matrix.xlsx"
-# FILE3 = USER_HOME + r"\RRC power solutions\RRC VN - Documents\280_HR\104_ Employee_Management_Table\02. Employee management\RRC_Employee_Master_Data_2025-07-10.xlsx"
+FILE4 = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import\Training_Evidence.xlsx"
+FILE2 = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Matrix.xlsx"
+#FILE3 = BASE_DIR_1 + r"\104_ Employee_Management_Table\02. Employee management\RRC_Employee_Master_Data_2025-07-10.xlsx"
 FILE3 = r"C:\Training HR scripts\RRC_Employee_Master_Data_2025-07-10.xlsx"
 
 # Logging to same folder as File1

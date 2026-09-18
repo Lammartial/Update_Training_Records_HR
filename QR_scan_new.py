@@ -51,15 +51,25 @@ except Exception:
 # ========= CONFIG =========
 USER_HOME = os.path.expanduser("~")
 
+# Automatically detect which RRC SharePoint folder structure is synced
+if os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"
+    print("User synced the 999_SHARE_VN folder separately!")
+elif os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"
+    print("User synced the whole Sharepoint library Documents folder!")
+else:
+    raise FileNotFoundError("Cannot find the RRC 999_SHARE_VN folder.")
+
 # Folder containing training evidence PDFs to scan
-INPUT_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\PDF_to_import"
+INPUT_DIR = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\PDF_to_import"
 # INPUT_DIR = r"C:\Training HR scripts\PDF_to_import"
 # Excel template to populate
-TEMPLATE_XLSX = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_imported\2026.6.9 Training_Evidence.xlsx"
+TEMPLATE_XLSX = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_imported\2026.6.9 Training_Evidence.xlsx"
 
 # Output folder
 OUTPUT_DIR = r"C:\Training HR scripts\Input"
-# OUTPUT_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import"
+#OUTPUT_DIR = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import"
 
 # Optimized Multi-Pass Strategy Settings
 SAVE_DEBUG_IMAGES = False

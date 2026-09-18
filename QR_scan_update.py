@@ -35,20 +35,30 @@ except Exception:
 # ========= CONFIG =========
 USER_HOME = os.path.expanduser("~")
 
+# Automatically detect which RRC SharePoint folder structure is synced
+if os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - 999_SHARE_VN"
+    print("User synced the 999_SHARE_VN folder separately!")
+elif os.path.exists(USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"):
+    BASE_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN"
+    print("User synced the whole Sharepoint library Documents folder!")
+else:
+    raise FileNotFoundError("Cannot find the RRC 999_SHARE_VN folder.")
+
 # Folder containing training evidence PDFs to scan
 # INPUT_DIR = r"C:\Training HR scripts\PDF_to_import"
-INPUT_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\PDF_to_import"
+INPUT_DIR = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\PDF_to_import"
 
 # The EXISTING Excel file that has already been partially processed.
 # The script will read its SUMMARY sheet and append new sheets to this file.
 # EXISTING_XLSX = r"C:\Training HR scripts\Input\Training_Evidence.xlsx"
-EXISTING_XLSX = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import\Training_Evidence.xlsx"
+EXISTING_XLSX = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import\Training_Evidence.xlsx"
 
 # The file to save to (Set to EXISTING_XLSX to update in-place, or a new path to create a copy)
 OUTPUT_XLSX = EXISTING_XLSX
 
-OUTPUT_DIR = r"C:\Training HR scripts\Input"
-# OUTPUT_DIR = USER_HOME + r"\RRC power solutions\RRC VN - Documents\999_SHARE_VN\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import"
+# OUTPUT_DIR = r"C:\Training HR scripts\Input"
+OUTPUT_DIR = BASE_DIR + r"\280_HR\004_Training\100_Training\Training_Evidence_Scan\XLSX_to_import"
 
 # Optimized Multi-Pass Strategy Settings
 SAVE_DEBUG_IMAGES = False   # Set to True to output debug image with QR code bounding box scan results.

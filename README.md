@@ -29,8 +29,8 @@ Training_Evidence.xlsx
           ▼
 ┌────────────────────────────┐
 │ HR_import2_V5.4_GUI_v3     │
-│ Import & enrich training    │
-│ evidence data               │
+│ Import & enrich training   │
+│ evidence data              │
 └────────────┬───────────────┘
              │
              ▼

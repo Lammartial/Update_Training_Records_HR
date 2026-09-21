@@ -6,6 +6,8 @@ import shutil # <-- needed to copy the template file
 import pywintypes # <-- needed to convert dates for Excel COM
 from datetime import datetime, date, time, timedelta
 
+sys.stdout.reconfigure(encoding='utf-8')
+
 # Delete pywin32 generated cache before starting Excel COM
 gen_py_path = os.path.join(os.environ["TEMP"], "gen_py")
 
@@ -86,13 +88,15 @@ while True:
     employee_id = ws0[f"L{row}"].value  # Employee_ID is in column L
     if employee_id is None:
         break
-    
+
     # Initialize employee training list if not exists
     if str(employee_id) not in training_data:
         training_data[str(employee_id)] = []
     
     # Extract training data for this employee
-    filename = ws0[f"D{row}"].value[5:]
+    # filename = ws0[f"D{row}"].value[5:]
+    filename = str(ws0[f"B{row}"].value) + ".pdf"
+
     training_record = {
         "Training_No": ws0[f"E{row}"].value,  # Column E
         "Expiration_Date": normalize_date(ws0[f"H{row}"].value),  # Column H
@@ -101,7 +105,6 @@ while True:
         "Training_Compliance_Status": ws0[f"I{row}"].value,  # Column I (you may need to adjust this)
         "Manual_Approval_Status": ws0[f"J{row}"].value,  # Column J
     }
-    
     training_data[str(employee_id)].append(training_record)
     row += 1
 

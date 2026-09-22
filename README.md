@@ -5,6 +5,31 @@ Python-based automation for processing training evidence PDF files, extracting i
 
 The project consists of several scripts that form a sequential processing pipeline:
 
+### Automated execution
+
+For normal use, the entire workflow can be started from a single file:
+
+```text
+HR_TRAINING_AUTOMATION.pyw
+```
+
+The launcher provides a GUI with two options:
+
+- **Create NEW Training Evidence** → uses `QR_scan_new.py`
+- **UPDATE Existing Training Evidence** → uses `QR_scan_update.py`
+
+After the user selects an option, the launcher automatically:
+
+1. Checks `requirements.txt` and installs the required Python libraries if needed.
+2. Runs the selected QR scan script.
+3. Waits for the script to finish and for Excel/file operations to complete.
+4. Runs `HR_import2_V5.4_GUI_v3`.
+5. Runs `HR_SCRIPT1_V8`.
+6. Displays the live output/log of the scripts in the GUI.
+7. Stops the process if any step fails.
+
+The launcher file and `requirements.txt` should be kept in the same folder as the three processing scripts.
+
 ````markdown
 Training Evidence PDFs
         │
@@ -328,6 +353,8 @@ Training-HR-Automation/
 │
 ├── README.md
 │
+├── HR_TRAINING_AUTOMATION.pyw   # Recommended launcher for the full workflow
+├── requirements.txt             # Required Python packages
 ├── QR_scan_new.py
 ├── QR_scan_update.py
 ├── HR_import2_V5.4_GUI_v3.py
@@ -485,7 +512,19 @@ End Sub
 
 # 10. Recommended Processing Order
 
-The recommended order for normal processing is:
+## Recommended: use the automated launcher
+
+For normal operation, run:
+
+```text
+HR_TRAINING_AUTOMATION.pyw
+```
+
+Then select either **Create NEW Training Evidence** or **UPDATE Existing Training Evidence**. The launcher automatically executes the required three scripts in the correct order and shows the live processing log.
+
+### Manual processing
+
+The individual scripts can still be run manually when troubleshooting or testing. The recommended order is:
 
 ```text
 Step 1
@@ -525,6 +564,20 @@ QR_scan_update.py
 ```
 
 so that successfully processed PDFs can be skipped.
+
+---
+
+# 10.1 Python Requirements
+
+`requirements.txt` is stored together with the automation scripts.
+
+`HR_TRAINING_AUTOMATION.pyw` checks this file after the user selects a processing mode and runs:
+
+```text
+python -m pip install -r requirements.txt
+```
+
+The installation output is shown in the launcher's Process Log. Normally, there is no need to install the packages manually.
 
 ---
 
